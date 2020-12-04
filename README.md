@@ -26,6 +26,7 @@ Table of Contents
 - [Program Details](#program-details)
   - [Inbuilt Models](#inbuilt-models)
 - [Dependencies](#dependencies)
+  - [OS](#os)
   - [Hardware](#hardware)
   - [Software](#software)
 - [Citing this Repository](#citing-this-repository)
@@ -83,12 +84,12 @@ python ExecuteMlde.py ./Validation/BasicTestData/InputValidationData.csv
 ```
 
 ### Pytest Validation
-Thorough testing of MLDE can be performed using [pytest](https://docs.pytest.org/en/stable/). To perform thorough testing, activate the mlde conda environment, navigate to the top-level MLDE directory, and run pytest as below
+MLDE has been thoroughly tested using [pytest](https://docs.pytest.org/en/stable/). These tests can be repeated as follows: activate the mlde conda environment, navigate to the top-level MLDE directory, and run pytest as below
 
 ```bash
 conda activate mlde
 cd ~/GitRepos/MLDE
-PYTHONPATH=/home/mlde_test/GitRepos/MLDE/ pytest
+PYTHONPATH=\$pathToRepoLocation/MLDE/ pytest
 ```
 
 The cd command should be modified for wherever your copy of MLDE is saved. The PYTHONPATH argument should also be modified as appropriate based on the location of MLDE on your computer. Running the pytest tests will take multiple hours, so it is recommended to run them overnight. 
@@ -243,6 +244,9 @@ For making predictions, the top-N model architectures (those with the lowest cro
 Currently, the prediction stage of MLDE can only be run using its inbuilt models, though it could potentially be expanded to allow custom designation of models in the future. All models are either written in/derived from Keras, XGBoost, and scikit-learn. The models are detailed in the supporting information section of the paper accompanying this repository.
 
 # Dependencies
+## OS
+MLDE was developed and vetted (using pytest) on a system running Ubuntu 18.04. In its current state it should run on any UNIX OS, but has not been tested on (nor can be expected to run) on Windows OS. 
+
 ## Hardware
 MLDE can be run on any standard setup (laptop or desktop) that has both CPU and GPU support. The lstm and unirep models can require up to 8 GB GPU RAM for encoding generation, while the others are fairly tame and should fit on most GPUs; encodings were generated with NVIDIA RTX2070 and TitanV GPUs during development of this software.
 

@@ -247,7 +247,7 @@ def test_run_mlde():
     train_test_inds = list(kfold_splitter.split(training_inds))
     
     # Identify GPU and CPU models
-    parameter_df = pd.read_csv("/home/brucejwittmann/GitRepos/MLDE/Validation/BasicTestData/TestMldeParams.csv")
+    parameter_df = pd.read_csv("./Validation/BasicTestData/TestMldeParams.csv")
     
     # Instantiate gpu and cpu models. Package info for hyperparameter optimization.
     default_mods, _ = prep_input_data(parameter_df, training_embeddings.shape)
@@ -483,7 +483,7 @@ def test_prep_input_data():
     - The correct information is pulled from the parameters_df    
     """
     # Load the parameter dataframe
-    parameter_df = pd.read_csv("/home/brucejwittmann/GitRepos/MLDE/Validation/BasicTestData/TestMldeParams.csv")
+    parameter_df = pd.read_csv("./Validation/BasicTestData/TestMldeParams.csv")
     
     # Create a series of input shapes
     test_input_shapes = ((10000, 2, 123),
