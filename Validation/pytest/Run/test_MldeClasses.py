@@ -20,17 +20,22 @@ import warnings
 from sklearn.exceptions import ConvergenceWarning
 warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
 
+# Get the directory of this file and required inputs
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+val_data_path = os.path.join(dir_path, "..", "..", "BasicTestData")
+
 # Load the most informative samples
-most_inform_inds = np.load("/home/brucejwittmann/GitRepos/MLDE/Simulate/InputData/CadexIndices/Transformer.npy")
-all_x = np.load("/home/brucejwittmann/GitRepos/MLDE/Simulate/InputData/Encodings/Transformer.npy")
-all_y = np.load("/home/brucejwittmann/GitRepos/MLDE/Simulate/InputData/Fitness.npy")
+most_inform_inds = np.load(os.path.join(val_data_path, "Inds.npy"))
+all_x = np.load(os.path.join(val_data_path, "GB1_T2Q_georgiev_Normalized.npy"))
+all_y = np.load(os.path.join(val_data_path, "Fitness.npy"))
 
 # Take the first 384 indices of the most informative
 train_inds = most_inform_inds[:300]
 test_inds = most_inform_inds[300:384]
 
 # Make a flat all_x
-flat_all_x = np.reshape(all_x, [len(all_x), 4*512])
+flat_all_x = np.reshape(all_x, [len(all_x), 4*19])
 
 # Make fake data to pass in. We will need both 2D and 3D data.
 x_train2d = flat_all_x[train_inds]
