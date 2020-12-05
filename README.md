@@ -1,6 +1,6 @@
 MLDE
 ====
-A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](#https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)". 
+A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)". 
 
 Table of Contents
 -----------------
@@ -270,4 +270,4 @@ MLDE requires the dependencies given below. The submodule [tape-neurips](https:/
 Specific versions used during the development of MLDE are listed here. MLDE is validated to be stable using these versions, though there should be some leeway if users use different versions. If running in a new environment, it is strongly recommended to perform the [pytest validation](#Installation-Validation) first.
 
 # Citing this Repository
-Please cite our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](#https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)" when referencing this repository.
+Please cite our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)" when referencing this repository.
