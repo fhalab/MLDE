@@ -1,3 +1,9 @@
 [submodule "Support/tape-neurips2019"]
-	path = Support/tape-neurips2019
+	path = code/tape-neurips2019
 	url = https://github.com/songlab-cal/tape-neurips2019.git
+[submodule "ZeroShot/DeepSequence/DeepSequence"]
+	path = deep_sequence/DeepSequence
+	url = https://github.com/debbiemarkslab/DeepSequence.git
+[submodule "code/esm"]
+	path = code/esm
+	url = https://github.com/facebookresearch/esm.git

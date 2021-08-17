@@ -16,3 +16,6 @@ dependencies:
   - xgboost=0.90
   - nltk=3.4.4
   - psutil
+  - pip
+  - pip:
+    - -e ./code/tape-neurips2019/

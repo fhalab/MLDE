@@ -1,0 +1,13 @@
+name: deep_sequence
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=2.7
+  - theano=1.0.1
+  - cudatoolkit=10.1
+  - cudnn
+  - biopython
+  - pandas
+  - backports.functools_lru_cache
+  - pytest

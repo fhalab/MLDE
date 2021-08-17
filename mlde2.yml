@@ -1,0 +1,28 @@
+name: mlde2
+channels:
+  - defaults
+  - conda-forge
+  - huggingface
+dependencies:
+  - python=3.7.3
+  - numpy=1.16.4
+  - pandas=0.25.3
+  - tqdm=4.32.1
+  - biopython=1.74
+  - hyperopt=0.2.2
+  - scipy=1.3.0
+  - scikit-learn=0.21.2
+  - tensorflow-gpu=1.13.1
+  - keras=2.2.5
+  - xgboost=0.90
+  - nltk=3.4.4
+  - psutil
+  - pytorch::pytorch>=1.5
+  - pytorch::torchvision
+  - pytorch::torchaudio
+  - cudatoolkit=10.1
+  - huggingface::transformers
+  - pip
+  - pip:
+    - -e ./code/tape-neurips2019/
+    - evcouplings
