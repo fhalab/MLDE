@@ -7,3 +7,9 @@
 [submodule "code/esm"]
 	path = code/esm
 	url = https://github.com/facebookresearch/esm.git
+[submodule "code/tape-neurips2019"]
+	path = code/tape-neurips2019
+	url = https://github.com/songlab-cal/tape-neurips2019.git
+[submodule "deep_sequence/DeepSequence"]
+	path = deep_sequence/DeepSequence
+	url = https://github.com/debbiemarkslab/DeepSequence.git
