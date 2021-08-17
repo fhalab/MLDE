@@ -1,6 +1,6 @@
 MLDE
 ====
-A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)". 
+A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)".
 
 Table of Contents
 -----------------
@@ -10,6 +10,7 @@ Table of Contents
 - [V1.0.0 What's New](#v100-whats-new)
   - [Major Changes](#major-changes)
   - [Minor Changes](#minor-changes)
+  - [Known Limitations](#known-limitations)
 - [Installation](#installation)
   - [Installation Validation](#installation-validation)
     - [Basic Tests](#basic-tests)
@@ -52,15 +53,18 @@ MLDE attempts to learn a function that maps protein sequence to protein fitness 
 # V1.0.0 What's New
 
 ## Major Changes
-1. Higher capacity, more diverse models for encoding: In addition to the models made available in V0.0.0 (those from the [tape-neurips2019](https://github.com/songlab-cal/tape-neurips2019#pretrained-models) repository), V1.0.0 can also use all models from [Facebook Research ESM V0.3.0](https://github.com/facebookresearch/esm/tree/v0.3.0#pre-trained-models-) and the ProtBert-BFD and ProtBert models from [ProtTrans](https://github.com/agemagician/ProtTrans#%EF%B8%8F-models-availability). 
+1. Higher capacity, more diverse models for encoding: In addition to the models made available in V0.0.0 (those from the [tape-neurips2019](https://github.com/songlab-cal/tape-neurips2019#pretrained-models) repository), V1.0.0 can also use all models from [Facebook Research ESM V0.3.0](https://github.com/facebookresearch/esm/tree/v0.3.0#pre-trained-models-) and the ProtBert-BFD and ProtBert models from [ProtTrans](https://github.com/agemagician/ProtTrans#%EF%B8%8F-models-availability).
 2. Zero-shot prediction: We have added script support for zero-shot prediction using various sequence-based strategies. We have found that eliminating holes from training data greatly improves MLDE outcome. This focused training MLDE (ftMLDE) can be accomplished by using zero-shot prediction strategies to focus laboratory screening efforts on variants with higher probability of retaining function. From simple command line inputs, MLDE V1.0.0 enables zero-shot prediction of the fitness of all members of combinatorial design spaces using [EVmutation](https://doi.org/10.1038/nbt.3769), [DeepSequence](https://doi.org/10.1038/s41592-018-0138-4), and masked token filling using models from [ESM](https://github.com/facebookresearch/esm/tree/v0.3.0#evolutionary-scale-modeling) and [ProtTrans](https://github.com/agemagician/ProtTrans#prottrans). Details on EVmutation and DeepSequence can be found in their original papers. Details on mask filling can be found in our accompanying [paper](). We welcome additional suggestions on zero-shot strategies to wrap in the MLDE pipeline.
 3. To accomodate the new packages and code, two new conda environment files have been provided (mlde2.yml and deep_sequence.yml).
-4. Addition of a script for replicating simulations performed in our accompanying paper. 
+4. Addition of a script for replicating simulations performed in our accompanying paper.
 
 ## Minor Changes
 1. To fix an occasional dying ReLU problem, all activations in the neural network models have been replaced with ELU.
 2. Classes, functions, filenames, and foldernames have been changed to better align with PEP8 standards.
 3. The installation procedure has been simplified.
+
+## Known Limitations
+We have not tested running multiple instances of MLDE in parallel on the same machine. While running in parallel should be expected to work in most cases, there are potential conflicts surrounding DeepSequence, where a temporary file is saved with a fixed name in order to make zero-shot predictions -- processes running in parallel have the potential to overwrite the file of the other, thus resulting in incorrect results. If support for parallel runs is requested, this is something we can look into more.
 
 # Installation
 1. MLDE relies on three submodules: [tape-neurips2019](https://github.com/songlab-cal/tape-neurips2019), which accompanies the work by Rao *et al.* *Evaluating Protein Transfer Learning with TAPE*, [DeepSequence](https://github.com/debbiemarkslab/DeepSequence), which accompanies the work by Riesselman *et al.* *Deep generative models of genetic variation capture the effects of mutations*, and [ESM](https://github.com/facebookresearch/esm), which accompanies the work by Rives *et al.* *Biological structure and function emerge from scaling unsupervised learning to 250 million protein sequences*. To include submodules, the MLDE repository must be cloned with the "--recurse-submodules" flag as below. MLDE will not work correctly without these submodules present.
@@ -75,7 +79,7 @@ git clone --recurse-submodules https://github.com/fhalab/MLDE.git
 cd ./MLDE
 conda env create -f mlde.yml
 conda env create -f mlde2.yml
-conda env create -f deep_sequence
+conda env create -f deep_sequence.yml
 ```
 
 The environments must be created from within the MLDE repository, otherwise [tape-neurips2019](https://github.com/songlab-cal/tape-neurips2019) will not be correctly installed.
@@ -93,7 +97,7 @@ Basic functionality of MLDE can be tested by running generate_encoding.py, predi
 
 ```bash
 conda activate mlde
-python generate_encoding.py transformer GB1_T2Q --fasta 
+python generate_encoding.py transformer GB1_T2Q --fasta
   ./code/validation/basic_test_data/2GI9.fasta --positions V39 D40 --batches 1
 ```
 
@@ -109,21 +113,21 @@ To run execute_mlde.py:
 
 ```bash
 conda activate mlde
-python execute_mlde.py ./code/validation/basic_test_data/InputValidationData.csv 
-  ./code/validation/basic_test_data/GB1_T2Q_georgiev_Normalized.npy 
-  ./code/validation/basic_test_data/GB1_T2Q_ComboToIndex.pkl 
-  --model_params ./code/validation/basic_test_data/TestMldeParams.csv 
+python execute_mlde.py ./code/validation/basic_test_data/InputValidationData.csv
+  ./code/validation/basic_test_data/GB1_T2Q_georgiev_Normalized.npy
+  ./code/validation/basic_test_data/GB1_T2Q_ComboToIndex.pkl
+  --model_params ./code/validation/basic_test_data/TestMldeParams.csv
   --hyperopt
 ```
 
 ### Pytest Validation
-MLDE has been thoroughly tested using [pytest](https://docs.pytest.org/en/stable/). Note that DeepSequence tests rely on data provided in the DeepSequence GitHub repository. They can be downloaded by running the `download_alignments.sh` and `download_pretrained.sh` scripts found in the DeepSequence submodule at `deep_sequnce/DeepSequence/examples/`.These tests can be repeated by executing the bash script `run_pytest.sh` from the top-level MLDE folder as below:
+MLDE has been thoroughly tested using [pytest](https://docs.pytest.org/en/stable/). These tests can be repeated by executing the bash script `run_pytest.sh` from the top-level MLDE folder as below. Note that DeepSequence tests rely on data provided in the DeepSequence GitHub repository. They can be downloaded by running the `download_alignments.sh` and `download_pretrained.sh` scripts found in the DeepSequence submodule at `deep_sequnce/DeepSequence/examples/`. 
 
 ```bash
 PYTHONPATH=$PathToMldeRepo ./run_pytests.sh
 ```
 
-Where $PathToMldeRepo should be the path to the folder in which `run_pytests.sh` is stored. Note that these tests can take a while, so it is best to run overnight. 
+Where $PathToMldeRepo should be the path to the folder in which `run_pytests.sh` is stored. Note that these tests can take a while, so it is best to run overnight.
 
 # General Use
 MLDE works in two or three stages: Encoding generation, zero-shot prediction, and prediction. The encoding generation stage takes a parent protein sequence and generates all encodings for a given combinatorial library. The zero-shot prediction stage can be used to recommend subsets of the full combinatorial library on which laboratory screening efforts should be focused. The prediction stage uses the encodings from the first stage in combination with fitness data from the laboratory-evaluated set of combinations to make predictions on the fitness of the full combinatorial space. The MLDE package can generate all encodings presented in our accompanying paper; users can also pass in their own encodings (e.g. from a custom encoder) to the prediction stage scripts.
@@ -150,14 +154,14 @@ The below example is a command line call for generating Georgiev encodings for a
 
 ```bash
 conda activate mlde
-python generate_encoding.py georgiev example_protein --n_combined 4 
+python generate_encoding.py georgiev example_protein --n_combined 4
 ```
 
 The below example is a command line call for generating transformer embeddings for the 4-site GB1 combinatorial library discussed in our work. Note that this command could be used for generating any of the learned embeddings (with appropriate substitution of the `encoding` argument). Because embeddings are context-aware, these encodings should not be used for another protein.
 
 ```bash
 conda activate mlde
-python generate_encoding.py transformer GB1_T2Q 
+python generate_encoding.py transformer GB1_T2Q
   --fasta ./code/validation/basic_test_data//2GI9.fasta
   --positions V39 D40 G41 V54 --batches 4
 ```
@@ -187,7 +191,7 @@ mqykLILNGKTLKGETTTEAVDAATAEKVFKQYANDNGVDGEWTYDDATKtftvte
 ```
 
 ### Outputs for generate_encoding.py
-Every run of generate_encoding.py produces a time-stamped folder containing all results. The time-stamp format is "YYYYMMDD-HHMMSS" (Y = year, M = month, D = day, H = 24-hour, M = minute, S = second). The time-stamped folder contains subfolders "Encodings" and "Fastas". 
+Every run of generate_encoding.py produces a time-stamped folder containing all results. The time-stamp format is "YYYYMMDD-HHMMSS" (Y = year, M = month, D = day, H = 24-hour, M = minute, S = second). The time-stamped folder contains subfolders "Encodings" and "Fastas".
 
 The "Encodings" folder will contain the below files ("\$NAME" is from the `name` argument of generate_encoding.py; "\$ENCODING" is from the `encoding` argument):
 
@@ -200,7 +204,7 @@ The "Encodings" folder will contain the below files ("\$NAME" is from the `name`
 
 Note that when encoding is "onehot", only unnormalized embeddings will be returned.
 
-The "Fastas" directory is only populated when models from TAPE are run. It contains fasta files with all sequences used to generate embeddings, split into batches as appropriate. 
+The "Fastas" directory is only populated when models from TAPE are run. It contains fasta files with all sequences used to generate embeddings, split into batches as appropriate.
 
 ## Zero Shot Prediction with predict_zero_shot.py and run_deepsequence.py
 We have found that eliminating holes from training data greatly improves MLDE outcome. This focused training MLDE (ftMLDE) can be accomplished by using zero-shot prediction strategies to focus laboratory screening efforts on variants with higher probability of retaining function. In our recent work, we evaluated a number of zero-shot prediction strategies, including [EVmutation](https://doi.org/10.1038/nbt.3769), [DeepSequence](https://doi.org/10.1038/s41592-018-0138-4), and mask filling using BERT-style models. We encourage users to read the original EVmutation and DeepSequence papers for details on their functionality; we detail mask filling in our [accompanying work](). In our accompanying work, we also tested ΔΔG predictions using the [Triad protein modeling software](https://www.protabit.com/#triad); this software is not open-source, however, and so we do not include it here.
@@ -222,7 +226,7 @@ predict_zero_shot.py can be used to make zero shot predictions using a number of
 | --output | Optional Keyword Argument | Output location for saving data. Default is the current working directory if not specified. |
 
 ### Inputs for run_deepsequence.py
-The [DeepSequence repository](https://github.com/debbiemarkslab/DeepSequence) was written in Python 2, and so is incompatible with much of the MLDE framework. It must thus be run within its own conda environment and is executed from a stand-alone script. 
+The [DeepSequence repository](https://github.com/debbiemarkslab/DeepSequence) was written in Python 2, and so is incompatible with much of the MLDE framework. It must thus be run within its own conda environment and is executed from a stand-alone script.
 
 Inputs to `run_deepsequence.py` are given below:
 
@@ -236,12 +240,12 @@ Inputs to `run_deepsequence.py` are given below:
 | --no_cudnn | Flag | DeepSequence runs on Theano, which is no longer a supported package. As a result, newer cuDNN libraries are no longer compatbile with its code and can cause this script to fail. If you are running into compatibility issues when running this code, set this flag to turn off use of cuDNN; this will slow down computation, but should not change the output. |
 
 ### Building an Alignment for DeepSequence and Obtaining an EVmutation Model
-We recommend using the excellent [EVcouplings webserver](https://v2.evcouplings.org/) to build MSAs for DeepSequence and EVmutation. It can also be used to build MSAs for the MSA transformer, though additional processing of the output may be required to reduce the size of the output alignment to a more appropriate size for the MSA transformer (see [Building an Alignment for MSA Transformer](#building-an-alignment-for-msa-transformer) for more details). 
+We recommend using the excellent [EVcouplings webserver](https://v2.evcouplings.org/) to build MSAs for DeepSequence and EVmutation. It can also be used to build MSAs for the MSA transformer, though additional processing of the output may be required to reduce the size of the output alignment to a more appropriate size for the MSA transformer (see [Building an Alignment for MSA Transformer](#building-an-alignment-for-msa-transformer) for more details).
 
 The optimal parameters for the homology search will vary depending on the protein, and we refer users to the original [EVmutation](https://doi.org/10.1038/nbt.3769) and [DeepSequence](https://doi.org/10.1038/s41592-018-0138-4) papers for information on how to best tune them. Once the homology search is complete, alignments can be downloaded in a2m format by navigating to the "Downloads" tab of the results interface and clicking "Sequence alignment" in the "Sequence alignment" section. The model parameters for an EVmutation model trained using this alignment can also be obtained by clicking "EVcouplings model parameters"; the downloaded file should be input as the `--evmutation_model` argument in predict_zero_shot.py.
 
 ### Building an Alignment for MSA Transformer
-The .a2m file output by the EVcouplings webserver can be used by predict_zero_shot.py and generate_encoding.py for zero-shot predictions and encoding generation, respectively, with the MSA transformer. As stated by the [developers of the MSA transformer](https://doi.org/10.1101/2021.02.12.430858) "At inference time...we do not provide the full MSA to the model as it would be computationally expensive and the model’s performance can decrease when the input is much larger than that used during training." Instead, the authors tested subsampling of the MSA (ensuring that the reference sequence was always included) using a variety of different strategies. We encourage users to read the [original MSA transformer paper](https://doi.org/10.1101/2021.02.12.430858) for details on recommended practices for subsampling an MSA. 
+The .a2m file output by the EVcouplings webserver can be used by predict_zero_shot.py and generate_encoding.py for zero-shot predictions and encoding generation, respectively, with the MSA transformer. As stated by the [developers of the MSA transformer](https://doi.org/10.1101/2021.02.12.430858) "At inference time...we do not provide the full MSA to the model as it would be computationally expensive and the model’s performance can decrease when the input is much larger than that used during training." Instead, the authors tested subsampling of the MSA (ensuring that the reference sequence was always included) using a variety of different strategies. We encourage users to read the [original MSA transformer paper](https://doi.org/10.1101/2021.02.12.430858) for details on recommended practices for subsampling an MSA.
 
 ### Examples for predict_zero_shot.py
 
@@ -249,7 +253,7 @@ predict_zero_shot.py should be run from within the mlde2 environment. The below 
 
 ```bash
 conda activate mlde2
-python predict_zero_shot.py --positions V39 D40 G41 V54 --models esm1b_t33_650M_UR50S 
+python predict_zero_shot.py --positions V39 D40 G41 V54 --models esm1b_t33_650M_UR50S
     EVmutation esm_msa1_t12_100M_UR50S --fasta ./code/validation/basic_test_data/2GI9.fasta
     --alignment ./code/validation/basic_test_data/GB1_Alignment.a2m
     --evmutation_model ./code/validation/basic_test_data/GB1_EVcouplingsModel.model
@@ -264,7 +268,7 @@ Within the deep_sequence environment, DeepSequence can be run with the below com
 
 ```bash
 conda activate deep_sequence
-python run_deep_sequence.py ./code/validation/basic_test_data/GB1_Alignment.a2m 
+python run_deep_sequence.py ./code/validation/basic_test_data/GB1_Alignment.a2m
   --positions V39 D40 --output ~/Downloads --save_model --no_cudnn
 ```
 
@@ -275,7 +279,7 @@ Note that all flags/arguments are shown for sake of example. In practice, the `-
 Both `predict_zero_shot.py` and `run_deep_sequence.py` output a single csv file to the directory specified by `--output`. The first column in this csv file is "Combo", which contains the 4-letter shorthand notation for all combinations possible in the defined combinatorial library. For instance, the wild type combo V39, D40, G41, V54 for GB1 would be written as "VDGV" in this output. For the `run_deep_sequence.py` output, the only other column is "DeepSequence", which contains all predictions made by the trained model. For the `predict_zero_shot.py` output, all remaining columns are the outputs from the different zero-shot predictors requested with the `--models` argument along with any other relevant information about the prediction separated by a "-" delimiter. For instance, the column name "esm1_t34_670M_UR50S-Naive" would indicate that the output corresponds to predictions using the esm1_t34_670M_UR50S model from ESM using naive probability for mask filling. Outputs from EVmutation and DeepSequence are ΔELBo, while outputs from all other models are log probabilities. **For all models, a higher (less negative) zero-shot score means greater confidence that that variant will be functional.**
 
 ## Making Predictions with execute_mlde.py
-MLDE predictions are made using the execute_mlde.py script. This script should be run in the mlde conda environment. Inputs to this script include the encodings for all possible members of the combinatorial space, experimentally determined sequence-function data for a small number of combinations (for use as training data), and a dictionary linking all possible members of the combinatorial space to their associated encoding. 
+MLDE predictions are made using the execute_mlde.py script. This script should be run in the mlde conda environment. Inputs to this script include the encodings for all possible members of the combinatorial space, experimentally determined sequence-function data for a small number of combinations (for use as training data), and a dictionary linking all possible members of the combinatorial space to their associated encoding.
 
 ### Inputs for execute_mlde.py
 | Argument | Type | Description |
@@ -300,14 +304,14 @@ This csv file contains the sequence-function data for the protein of interest. A
 | WPGC | 0.0097 |
 | WGPP | 0.0022 |
 
-The two column headers must always be present and always have the same name. Sequence is input as the combination identity, which is the amino acid present at each position in order. For instance, a combination of A14, C23, Y60, and W91 would be written as "ACYW". 
+The two column headers must always be present and always have the same name. Sequence is input as the combination identity, which is the amino acid present at each position in order. For instance, a combination of A14, C23, Y60, and W91 would be written as "ACYW".
 
-While not strictly required, it is recommended to normalize fitness in some manner. Common normalization factors would be the fitness of the parent protein or the maximum fitness in the training data. 
+While not strictly required, it is recommended to normalize fitness in some manner. Common normalization factors would be the fitness of the parent protein or the maximum fitness in the training data.
 
 #### Custom Encodings
 Any encoding can be passed into execute_mlde.py so long as it meets the dimensionality requirements. Specifically, the array must take the shape `20^C x C x L`, where `C` is the number of amino acid positions combined and `L` is the number of dimensions per amino acid for the encoding. The program will throw an exception if a non-3D encoding is passed in as `encoding_data`.
 
-Note that for all but the convolutional neural networks, the last 2 dimensions of the input space will be flattened before processing. In other words, convolutional networks are trained on 2D encodings and all other models on 1D encodings. 
+Note that for all but the convolutional neural networks, the last 2 dimensions of the input space will be flattened before processing. In other words, convolutional networks are trained on 2D encodings and all other models on 1D encodings.
 
 #### mlde_parameters.csv
 This file details what models are included in an MLDE run and how many hyperparameter optimization rounds will be executed for each model. By default, the file found at MLDE/code/params/mlde_parameters.csv is used, though users can pass in their own versions; the default file can be used as a template for custom parameter files, but should never be changed itself. The contents of the mlde_parameters.csv file are copied below:
@@ -347,7 +351,7 @@ conda activate mlde
 python execute_mlde.py .code/validation/basic_test_Data/InputValidationData.csv
     ./code/validation/basic_test_data/GB1_T2Q_georgiev_Normalized.npy
     ./code/validation/basic_test_data/GB1_T2Q_ComboToIndex.pkl
-    --model_params ../code/validation/basic_test_data/TestMldeParams.csv 
+    --model_params ../code/validation/basic_test_data/TestMldeParams.csv
     --output ~/Downloads --n_averaged 5 --n_cv 10 --hyperopt
 ```
 
@@ -372,7 +376,7 @@ The CaltechData folder contains 4 objects:
 3. AllSummaries_Ensemble.csv
 4. README.txt
 
-The csv files contain summary information for all simulations performed in our work either for predictions made by independent models (ByModel) or an ensemble of the best models (Ensemble). Relevant information about the contents of these files can be found in the README.txt file. To perform simulations using `simulate_mlde.py`, you must first move the folder "SimulationTrainingData" to the top-level MLDE directory (i.e., in the same directory as `simulate_mlde.py`). 
+The csv files contain summary information for all simulations performed in our work either for predictions made by independent models (ByModel) or an ensemble of the best models (Ensemble). Relevant information about the contents of these files can be found in the README.txt file. To perform simulations using `simulate_mlde.py`, you must first move the folder "SimulationTrainingData" to the top-level MLDE directory (i.e., in the same directory as `simulate_mlde.py`).
 
 `simulate_mlde.py` should be run in the `mlde` conda environment. Each call to `simulate_mlde.py` will perform simulations using one design condition tested in our work. For instance, a single run of `simulate_mlde.py` could be used to run the simulations using onehot encoding with 384 training points drawn from the top 6400 samples predicted by Triad. Arguments to the script are given in detail below:
 
@@ -394,16 +398,16 @@ A single run of `simulate_mlde.py` will generate a single time-stamped folder. T
 A final note: some of the sklearn models used in MLDE are not always the most stable when trained with one-hot encodings. You may see an occasional warning that either "sklearn-regressor-LassoLarsCV" failed due misaligned dimensions or else that "sklearn-regressor-ARDRegression" failed due to an "unrecoverable internal error". These warnings should be sporadic (i.e., if every simulation throws this warning, you have a problem) but are not cause for concern -- MLDE internally handles failed models and drops them from analysis (to be specific, it assigns the failed model class an infinite cross-validation error, so unless you are averaging all model architectures in the ensemble you will not have a problem).
 
 # Program Details
-The MLDE algorithm takes as input all encodings corresponding to the combinations of amino acids found in the training data along with their measured fitness values. During the training stage, these sampled combinations are used to train a version of all inbuilt model architectures. Specifically, k-fold cross validation is performed to train each model using the default model parameters; mean validation error from the k-fold cross validation (mean squared error) is recorded for each architecture. Notably, all model instances trained during k-fold cross validation are also stored for later use. For instance, if evaluating all 22 inbuilt model architectures with 5-fold cross validation, 22 x 5 = 110 total trained model instances are recorded. In the next stage, H rounds of Bayesian hyperparameter optimization using the hyperopt Python package are optionally performed. Hyperparameters that minimize mean validation error are recorded. Post hyperparameter optimization, models are retrained using their optimal hyperparameters and mean validation error is recorded. 
+The MLDE algorithm takes as input all encodings corresponding to the combinations of amino acids found in the training data along with their measured fitness values. During the training stage, these sampled combinations are used to train a version of all inbuilt model architectures. Specifically, k-fold cross validation is performed to train each model using the default model parameters; mean validation error from the k-fold cross validation (mean squared error) is recorded for each architecture. Notably, all model instances trained during k-fold cross validation are also stored for later use. For instance, if evaluating all 22 inbuilt model architectures with 5-fold cross validation, 22 x 5 = 110 total trained model instances are recorded. In the next stage, H rounds of Bayesian hyperparameter optimization using the hyperopt Python package are optionally performed. Hyperparameters that minimize mean validation error are recorded. Post hyperparameter optimization, models are retrained using their optimal hyperparameters and mean validation error is recorded.
 
-For making predictions, the top N model architectures (those with the lowest cross-validation error) are first identified. For each of the top N model architectures, predictions are made on the unsampled combinations by averaging the predictions of the kN model instances stored during cross validation. For instance, if testing the top 3 model architectures identified from 5-fold cross-validation, this means that the predictions of 3 x 5 = 15 total models (3 architectures x 5 model instances/architecture saved during cross validation) are used for prediction. 
+For making predictions, the top N model architectures (those with the lowest cross-validation error) are first identified. For each of the top N model architectures, predictions are made on the unsampled combinations by averaging the predictions of the kN model instances stored during cross validation. For instance, if testing the top 3 model architectures identified from 5-fold cross-validation, this means that the predictions of 3 x 5 = 15 total models (3 architectures x 5 model instances/architecture saved during cross validation) are used for prediction.
 
 ## Inbuilt Models
 Currently, the prediction stage of MLDE can only be run using its inbuilt models. All models are either written in/derived from Keras, XGBoost, and scikit-learn. The models are detailed in the supporting information section of the paper accompanying this repository.
 
 # Dependencies
 ## OS
-MLDE was developed and vetted (using pytest) on a system running Ubuntu 18.04. In its current state it should run on any UNIX OS, but has not been tested on (nor can be expected to run) on Windows OS. 
+MLDE was developed and vetted (using pytest) on a system running Ubuntu 18.04. In its current state it should run on any UNIX OS, but has not been tested on (nor can be expected to run) on Windows OS.
 
 ## Hardware
 MLDE can be run on any standard setup (laptop or desktop) that has both CPU and GPU support. Some models for embedding generation  can require high GPU RAM usage, but should fit on decently sized commercial GPUs at a low enough batch size. During testing, we were able to generate all encodings for GB1 on an NVIDIA RTX 2070 (8 GB RAM) with room to spare (though it could be quite slow).
@@ -411,7 +415,7 @@ MLDE can be run on any standard setup (laptop or desktop) that has both CPU and 
 ## Software
 ### MLDE Software
 MLDE requires the dependencies given below. Instructions on the [tape-neurips](https://github.com/songlab-cal/tape-neurips2019) repository can be followed for its installation. Note that [EVcouplings](https://github.com/debbiemarkslab/EVcouplings) should be installed using `pip`. There is a clash between the CUDA Toolkit requirements for tensorflow-gpu v1.13.1 and Pytorch >v1.5: Given your CUDA Toolkit version installed, either Pytorch or tensorflow-gpu will not work.
-  
+
   - python=3.7.3
   - numpy=1.16.4
   - pandas=0.25.3
