@@ -368,7 +368,7 @@ Every run of execute_mlde.py produces a time-stamped folder containing all resul
 |HyperoptInfo.csv | This csv file gives details on the hyperparameter optimization procedure, including parameter values tested and associated cross-validation errors in each iteration. |
 
 ## Replicating Published Results with simulate_mlde.py
-We provide the script `simulate_mlde.py` for replicating simulations performed in [our publication](https://doi.org/10.1016/j.cels.2021.07.008). To use this script, you must first download the embeddings, training indices, cross validation indices, and other information that we used for performing simulations from CaltechData. A link to the appropriate download is (here)[https://data.caltech.edu/records/1958].
+We provide the script `simulate_mlde.py` for replicating simulations performed in [our publication](https://doi.org/10.1016/j.cels.2021.07.008). To use this script, you must first download the embeddings, training indices, cross validation indices, and other information that we used for performing simulations from CaltechData. A link to the appropriate download is [here](https://data.caltech.edu/records/1958).
 
 The CaltechData folder contains 4 objects:
 1. SimulationTrainingData
