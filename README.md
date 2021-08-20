@@ -1,6 +1,6 @@
 MLDE
 ====
-A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)".
+A machine-learning package for navigating combinatorial protein fitness landscapes. This repository accompanies our work "[Informed training set design enables efficient machine learning-assisted directed protein evolution](https://doi.org/10.1016/j.cels.2021.07.008)".
 
 Table of Contents
 -----------------
@@ -121,7 +121,7 @@ python execute_mlde.py ./code/validation/basic_test_data/InputValidationData.csv
 ```
 
 ### Pytest Validation
-MLDE has been thoroughly tested using [pytest](https://docs.pytest.org/en/stable/). These tests can be repeated by executing the bash script `run_pytest.sh` from the top-level MLDE folder as below. Note that DeepSequence tests rely on data provided in the DeepSequence GitHub repository. They can be downloaded by running the `download_alignments.sh` and `download_pretrained.sh` scripts found in the DeepSequence submodule at `deep_sequnce/DeepSequence/examples/`. 
+MLDE has been thoroughly tested using [pytest](https://docs.pytest.org/en/stable/). These tests can be repeated by executing the bash script `run_pytest.sh` from the top-level MLDE folder as below. Note that DeepSequence tests rely on data provided in the DeepSequence GitHub repository. They can be downloaded by running the `download_alignments.sh` and `download_pretrained.sh` scripts found in the DeepSequence submodule at `deep_sequnce/DeepSequence/examples/`.
 
 ```bash
 PYTHONPATH=$PathToMldeRepo ./run_pytests.sh
@@ -368,7 +368,7 @@ Every run of execute_mlde.py produces a time-stamped folder containing all resul
 |HyperoptInfo.csv | This csv file gives details on the hyperparameter optimization procedure, including parameter values tested and associated cross-validation errors in each iteration. |
 
 ## Replicating Published Results with simulate_mlde.py
-We provide the script `simulate_mlde.py` for replicating simulations performed in our publication ___. To use this script, you must first download the embeddings, training indices, cross validation indices, and other information that we used for performing simulations from CaltechData. A link to the appropriate download is here.
+We provide the script `simulate_mlde.py` for replicating simulations performed in [our publication](https://doi.org/10.1016/j.cels.2021.07.008). To use this script, you must first download the embeddings, training indices, cross validation indices, and other information that we used for performing simulations from CaltechData. A link to the appropriate download is (here)[https://data.caltech.edu/records/1958].
 
 The CaltechData folder contains 4 objects:
 1. SimulationTrainingData
@@ -452,7 +452,7 @@ DeepSequence requires the dependencies given below:
   - backports.functools_lru_cache
 
 # Citing this Repository
-Please cite our work "[Machine Learning-Assisted Directed Evolution Navigates a Combinatorial Epistatic Fitness Landscape with Minimal Screening Burden](https://www.biorxiv.org/content/10.1101/2020.12.04.408955v1)" when referencing this repository.
+Please cite our work "[Informed training set design enables efficient machine learning-assisted directed protein evolution](https://doi.org/10.1016/j.cels.2021.07.008)" when referencing this repository.
 
 # Citing Supporting Repositories
 MLDE relies on previously published GitHub repositories for encoding generation and zero-shot prediction. Links to the source repositories and bibtex entries for the accompanying works are below:
